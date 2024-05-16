@@ -42,8 +42,9 @@ except ImportError:
 
 incdirs = get_numpy_include_dirs()+incdirs
 
-print('TARGET_CFLAGS +=',get_config_var('BASECFLAGS'), file=out)
-print('TARGET_CXXFLAGS +=',get_config_var('BASECFLAGS'), file=out)
+base_c_flags = get_config_var('BASECFLAGS') or ''
+print('TARGET_CFLAGS +=',base_c_flags, file=out)
+print('TARGET_CXXFLAGS +=',base_c_flags, file=out)
 
 print('PY_VER :=',get_config_var('VERSION'), file=out)
 ldver = get_config_var('LDVERSION')
