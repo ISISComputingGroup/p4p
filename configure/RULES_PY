@@ -7,9 +7,8 @@ endif
 PY_FILES += $(PY:%=$(PY_INSTALL_DIR)/%)
 
 $(PY_FILES) : $(PY_INSTALL_DIR)/%: ../%
-	@[ -d $(dir $@) ] || install -d $(dir $@)
 	@echo "Install PY $@"
-	install -m 644 $< $@
+	@$(INSTALL) -d -m $(INSTALL_PERMISSIONS) $< $(PY_INSTALL_DIR)
 
 build: $(PY_FILES)
 
