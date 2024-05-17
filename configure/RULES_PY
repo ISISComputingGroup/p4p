@@ -8,7 +8,7 @@ PY_FILES += $(PY:%=$(PY_INSTALL_DIR)/%)
 
 $(PY_FILES) : $(PY_INSTALL_DIR)/%: ../%
 	@echo "Install PY $@"
-	@$(INSTALL) -d -m $(INSTALL_PERMISSIONS) $< $(PY_INSTALL_DIR)
+	@$(INSTALL) -d -m $(INSTALL_PERMISSIONS) $< $(@D)
 
 build: $(PY_FILES)
 
