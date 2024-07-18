@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import os
 import sysconfig
+from sysconfig import get_config_var
 
 from setuptools_dso import Extension, setup, cythonize
 
@@ -13,13 +14,6 @@ try:
 except ImportError:
     def get_numpy_include_dirs():
         return [numpy.get_include()]
-
-import epicscorelibs.path
-import epicscorelibs.version
-from epicscorelibs.config import get_config_var
-
-import pvxslibs.path
-import pvxslibs.version
 
 with open('src/p4p/version.py', 'r') as F:
     lcl = {}
@@ -60,16 +54,14 @@ exts = cythonize([
             "src/pvxs_type.cpp",
             "src/pvxs_value.cpp",
         ],
-        include_dirs = get_numpy_include_dirs()+[epicscorelibs.path.include_path, pvxslibs.path.include_path, 'src', 'src/p4p'],
+        include_dirs = get_numpy_include_dirs()+['src', 'src/p4p'],
         define_macros = cppflags + [
             ('PY_ARRAY_UNIQUE_SYMBOL', 'PVXS_PyArray_API'),
             ('PVXS_ENABLE_EXPERT_API', None),
         ],
         extra_compile_args = get_config_var('CXXFLAGS')+cxxflags,
         extra_link_args = get_config_var('LDFLAGS')+ldflags,
-        dsos = ['pvxslibs.lib.pvxs',
-                'epicscorelibs.lib.Com'
-        ],
+        dsos = [],
         libraries = get_config_var('LDADD'),
     ),
     Extension(
@@ -79,13 +71,11 @@ exts = cythonize([
             'src/pvxs_gw.cpp',
             'src/pvxs_odometer.cpp'
         ],
-        include_dirs = get_numpy_include_dirs()+[epicscorelibs.path.include_path, pvxslibs.path.include_path, 'src', 'src/p4p'],
+        include_dirs = get_numpy_include_dirs()+['src', 'src/p4p'],
         define_macros = cppflags + [('PVXS_ENABLE_EXPERT_API', None)],
         extra_compile_args = get_config_var('CXXFLAGS')+cxxflags,
         extra_link_args = get_config_var('LDFLAGS')+ldflags,
-        dsos = ['pvxslibs.lib.pvxs',
-                'epicscorelibs.lib.Com'
-        ],
+        dsos = [],
         libraries = get_config_var('LDADD'),
     )
 ])
@@ -132,8 +122,6 @@ setup(
     package_data={'p4p': ['*.conf', '*.service']},
     ext_modules = exts,
     install_requires = [
-        epicscorelibs.version.abi_requires(),
-        pvxslibs.version.abi_requires(),
         # assume ABI forward compatibility as indicated by
         # https://github.com/numpy/numpy/blob/master/numpy/core/setup_common.py#L28
         'numpy >=%s'%numpy.version.short_version,
